@@ -6,6 +6,7 @@ class PostsController < ApplicationController
   
   def show
     @post = Post.find(params[:id])
+    @user = User.find(@post.user_id)
   end
 
   def index
@@ -14,7 +15,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
-   
+    @post.user_id = @post.user_id.to_i
     if @post.save
       redirect_to @post
     else
@@ -37,10 +38,17 @@ class PostsController < ApplicationController
     end
     
   end
+
+  def destroy
+    @post = Post.find(params[:id])
+    @post.destroy
+    
+    redirect_to posts_path
+  end
    
   private
     def post_params
-      params.require(:post).permit(:title, :text)
+      params.require(:post).permit(:user_id, :title, :text)
     end
 
 
